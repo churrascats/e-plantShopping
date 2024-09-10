@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem } from "./CartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 function ProductList() {
+	const cart = useSelector((state) => state.cart.items);
 	const dispatch = useDispatch();
 
 	const [showCart, setShowCart] = useState(false);
@@ -274,7 +275,7 @@ function ProductList() {
 			...prevState,
 			[product.name]: true,
 		}));
-        alert(`Added ${product.name} to your shopping cart.`)
+		alert(`Added ${product.name} to your shopping cart.`);
 	};
 
 	return (
@@ -340,6 +341,20 @@ function ProductList() {
 										stroke-width="2"
 										id="mainIconPathAttribute"
 									></path>
+									<text
+										id="dynamicValue"
+										x="128"
+										y="128"
+										fill="white"
+										fontSize="80"
+										textAnchor="middle"
+										alignmentBaseline="middle"
+									>
+										{cart.length > 0
+											? cart.reduce((total, current) => total + current.quantity, 0)
+											: 0
+											}
+									</text>
 								</svg>
 							</h1>
 						</a>
@@ -377,12 +392,11 @@ function ProductList() {
 										</div>
 
 										<button
-											className="product-button"
+											className={cart.find(item => item.name == plant.name) ? "product-button-added" : "product-button"}
 											onClick={() =>
 												handleAddToCart(plant)
 											}
 										>
-											Add to Cart
 										</button>
 									</div>
 								))}
